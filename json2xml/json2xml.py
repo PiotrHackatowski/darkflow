@@ -3,12 +3,17 @@ import json
 import xml.etree.cElementTree as ET
 import os
 from PIL import Image
+from shutil import copyfile
 
-ann_dir = "/home/masta/Pictures/audia6c6ann/"
-img_dir = "/home/masta/Pictures/audia6c6/"
+ann_dir = "/home/masta/Pictures/spark_huge/out/"
+img_dir = "/home/masta/Pictures/spark_huge/"
+
+final_img_dir = "/home/masta/Pictures/spark_huge_final/images/"
+final_ann_dir = "/home/masta/Pictures/spark_huge_final/ann/"
 
 for file in os.listdir(ann_dir):
-    if file.endswith(".json"):
+    statinfo = os.stat(ann_dir + file)
+    if file.endswith(".json") and 50 < statinfo.st_size < 200:
         print(file)
         img_file_name = file.replace("json", "jpg")
         img_file_full_path = img_dir + img_file_name
@@ -21,10 +26,13 @@ for file in os.listdir(ann_dir):
         print(height)
 
         f = open(ann_dir + file)
+
+
+
         data = json.loads(f.read())
         f.close()
 
-        if data:
+        if data and 'car' in data[0]['label']:
 
             print(data[0])
             print(data[0]['topleft']['x'])
@@ -66,6 +74,7 @@ for file in os.listdir(ann_dir):
             tree = ET.ElementTree(annotation)
 
             print(tree)
-            tree.write(file.replace("json", "xml"))
+            tree.write(final_ann_dir + file.replace("json", "xml"))
+            copyfile(img_file_full_path, final_img_dir + img_file_name)
             #xml = dicttoxml.dicttoxml(data)
             #print(xml)
