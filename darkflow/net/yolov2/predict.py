@@ -3,6 +3,7 @@ import math
 import cv2
 import os
 import json
+from shutil import copyfile
 #from scipy.special import expit
 #from utils.box import BoundBox, box_iou, prob_compare
 #from utils.box import prob_compare2, box_intersection
@@ -46,7 +47,14 @@ def postprocess(self, net_out, im, save = True):
 
 
 	resultsForXML = build_xml(w, h)
+	is_xml_ok = False
 
+	manual = os.path.join(self.FLAGS.imgdir, 'manual')
+	images = os.path.join(self.FLAGS.imgdir, 'images')
+	if not os.path.exists(images):
+		os.makedirs(images)
+	if not os.path.exists(manual):
+		os.makedirs(manual)
 
 	for b in boxes:
 
@@ -63,10 +71,11 @@ def postprocess(self, net_out, im, save = True):
 			if self.FLAGS.labelToChange and self.FLAGS.newLabel and self.FLAGS.labelToChange == mess:
 				mess = self.FLAGS.newLabel
 				resultsForXML = add_object_to_xml(resultsForXML, mess, top, left, right, bot)
-
+				is_xml_ok = True
+				continue
 		if self.FLAGS.json:
 			resultsForJSON.append({"label": mess, "confidence": float('%.2f' % confidence), "topleft": {"x": left, "y": top}, "bottomright": {"x": right, "y": bot}})
-			#continue
+			continue
 
 		cv2.rectangle(imgcv,
 			(left, top), (right, bot),
@@ -77,17 +86,31 @@ def postprocess(self, net_out, im, save = True):
 	if not save: return imgcv
 
 	outfolder = os.path.join(self.FLAGS.imgdir, 'out')
+	annfolder = os.path.join(self.FLAGS.imgdir, 'ann')
 	img_name = os.path.join(outfolder, os.path.basename(im))
+	ann_name = os.path.join(annfolder, os.path.basename(im))
 	if self.FLAGS.xml:
 		tree = ET.ElementTree(resultsForXML)
-		tree.write(os.path.splitext(img_name)[0] + ".xml")
+
+		if not is_xml_ok:
+			copyfile(im, os.path.join(manual, os.path.basename(im)))
+			return
+
+		if not os.path.exists(annfolder):
+			os.makedirs(annfolder)
+
+		tree.write(os.path.splitext(ann_name)[0] + ".xml")
+
+		copyfile(im, os.path.join(images, os.path.basename(im)))
+
+		return
 
 	if self.FLAGS.json:
 		textJSON = json.dumps(resultsForJSON)
 		textFile = os.path.splitext(img_name)[0] + ".json"
 		with open(textFile, 'w') as f:
 			f.write(textJSON)
-		#return
+		return
 
 	cv2.imwrite(img_name, imgcv)
 
