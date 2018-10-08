@@ -110,7 +110,9 @@ def shuffle(self):
 
             for j in range(b*batch, b*batch+batch):
                 train_instance = data[shuffle_idx[j]]
-                print("train_instance: " + train_instance)
+                print("train_instance: ")
+                for k in train_instance:
+                    print(k)
                 if train_instance is None:
                     continue
                 try:
