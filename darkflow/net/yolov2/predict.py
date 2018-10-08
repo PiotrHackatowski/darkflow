@@ -42,11 +42,12 @@ def postprocess(self, net_out, im, save = True):
 		imgcv = cv2.imread(im)
 	else: imgcv = im
 	h, w, _ = imgcv.shape
-	
+	#todo if size of file is 0 then continue
+	#todo add logging
 	resultsForJSON = []
 
 
-	resultsForXML = build_xml(w, h)
+	resultsForXML = build_xml(w, h, im)
 	is_xml_ok = False
 
 	manual = os.path.join(self.FLAGS.imgdir, 'manual')
@@ -115,12 +116,12 @@ def postprocess(self, net_out, im, save = True):
 	cv2.imwrite(img_name, imgcv)
 
 
-def build_xml(width, height):
+def build_xml(width, height, filename):
 	annotation = ET.Element("annotation")
 
 	# annotation
-	ET.SubElement(annotation, "folder").text = "audia6c6"
-	ET.SubElement(annotation, "filename").text = ""
+	ET.SubElement(annotation, "folder").text = "../images"
+	ET.SubElement(annotation, "filename").text = filename
 	ET.SubElement(annotation, "path").text = ""
 
 	# annotation/source
