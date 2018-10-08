@@ -17,7 +17,7 @@ def imcv2_recolor(im, a = .1):
 
 def imcv2_affine_trans(im):
 	# Scale and translate
-	print(im)
+
 	h, w, c = im.shape
 	scale = np.random.uniform() / 10. + 1.
 	max_offx = (scale-1.) * w
