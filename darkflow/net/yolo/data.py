@@ -110,11 +110,9 @@ def shuffle(self):
 
             for j in range(b*batch, b*batch+batch):
                 train_instance = data[shuffle_idx[j]]
-                print("train_instance: ")
-                for k in train_instance:
-                    print(k)
-                if train_instance is None:
-                    continue
+                #print("train_instance: ")
+                #for k in train_instance:
+                #   print(k)
                 try:
                     inp, new_feed = self._batch(train_instance)
                 except ZeroDivisionError:

@@ -55,8 +55,8 @@ def preprocess(self, im, allobj = None):
 	using scale, translation, flipping and recolor. The accompanied
 	parsed annotation (allobj) will also be modified accordingly.
 	"""
-
-	print('preprocessing image:' + im + 'of type' + str(type(im)))
+	# todo add to logger
+	#print('preprocessing image:' + im + 'of type' + str(type(im)))
 
 	if type(im) is not np.ndarray:
 		im = cv2.imread(im)

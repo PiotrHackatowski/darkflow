@@ -120,8 +120,8 @@ def build_xml(width, height, filename):
 	annotation = ET.Element("annotation")
 
 	# annotation
-	ET.SubElement(annotation, "folder").text = "../images"
-	ET.SubElement(annotation, "filename").text = filename
+	ET.SubElement(annotation, "folder").text = filename
+	ET.SubElement(annotation, "filename").text = os.path.basename(filename)
 	ET.SubElement(annotation, "path").text = ""
 
 	# annotation/source
