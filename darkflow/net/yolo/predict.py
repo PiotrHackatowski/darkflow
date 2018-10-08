@@ -56,7 +56,7 @@ def preprocess(self, im, allobj = None):
 	parsed annotation (allobj) will also be modified accordingly.
 	"""
 
-	print('preprocessing image:' + im)
+	print('preprocessing image:' + im + 'of type' + type(im))
 
 	if type(im) is not np.ndarray:
 		im = cv2.imread(im)
